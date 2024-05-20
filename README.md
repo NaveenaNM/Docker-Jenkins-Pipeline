@@ -133,16 +133,16 @@ To implement the Continuous Integration and Continuous Delivery (CI/CD) pipeline
 #### 4.2 Configure the Pipeline Script
 1. **Add the following Pipeline script:**
    ```bash
-   pipeline {
+  pipeline {
     agent any
     environment {
-        DOCKER_HUB_CREDENTIALS = 'af9f1471-32de-49ba-bd72-4f2c2cccd08c' /Global credential ID of dockerhub
-        DOCKER_IMAGE = 'pavithra42/docker_jenkinci_pipeline'
+        DOCKER_HUB_CREDENTIALS = 'c5aa9d67-5c30-4ed0-ac5d-588b6ea73826' // Global credential ID of Docker Hub
+        DOCKER_IMAGE = 'naveenanm/jeninkspipeline'
     }
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Pavithra-42/Docker-Jenkins-Pipeline.git'
+                git branch: 'main', url: 'https://github.com/NaveenaNM/Docker-Jenkins-Pipeline'
             }
         }
         stage('Build Docker Image') {
@@ -155,7 +155,7 @@ To implement the Continuous Integration and Continuous Delivery (CI/CD) pipeline
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
                         dockerImage.push()
                     }
                 }
@@ -164,14 +164,13 @@ To implement the Continuous Integration and Continuous Delivery (CI/CD) pipeline
         stage('Deploy Docker Container') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
-                        sh "docker run -d -p 8081:80 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
-                    }
-                 }
-              }
-           }
+                    sh "docker run -d -p 8081:80 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                }
+            }
         }
-       }
+    }
+}
+
 
    ```
 
